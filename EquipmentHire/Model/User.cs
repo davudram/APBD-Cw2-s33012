@@ -10,4 +10,5 @@ public class User(string uName, string uSurname, TypeUser uType)
     public string Name { get; set; } = uName;
     public string Surname { get; set; } = uSurname;
     public TypeUser TypeUser { get; set; } = uType;
+    public int CountOfHire {get; set;} = 0;
 }
