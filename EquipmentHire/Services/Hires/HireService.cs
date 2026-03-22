@@ -1,21 +1,30 @@
 ﻿using EquipmentHire.Enums;
 using EquipmentHire.Exceptions;
 using EquipmentHire.Model;
+using EquipmentHire.Services.Equipments;
+using EquipmentHire.Services.Users;
 
 namespace EquipmentHire.Services.Hires;
 
 public class HireService : IHireService
 {
     private readonly List<Hire> _hire = [];
-    private readonly List<User> _user = [];
-    private readonly List<Equipment> _equipment = [];
+    private readonly IEquipmentService _equipmentService;
+    private readonly IUserService _userService;
+
+    public HireService(IEquipmentService equipmentService, IUserService userService)
+    {
+        _equipmentService = equipmentService;
+        _userService = userService;
+    }
+    
     private static readonly decimal _dailyFinalRate = 10.5m;
     private const int StudentLimit = 2;
     private const int EmployeeLimit = 5;
     
     public void AddHire(Hire hire)
     {
-        var equipment = _equipment.FirstOrDefault(x => x.EquipmentId == hire.Equipment.EquipmentId);
+        var equipment = _equipmentService.GetAllEquipment().FirstOrDefault(x => x.EquipmentId == hire.Equipment.EquipmentId);
         
         if (equipment == null)
             throw new EquipmentNotFound(hire.Equipment.EquipmentId);
@@ -23,7 +32,7 @@ public class HireService : IHireService
         if (!equipment.IsAvailable)
             throw new EquipmentIsNotAvailable(hire.Equipment.EquipmentId);
         
-        var user = _user.FirstOrDefault(x => x.UserId.Equals(hire.User.UserId));
+        var user = _userService.GetUserById(hire.User.UserId);
         
         if(user == null)
             throw new UserNotFound(hire.User.UserId);
@@ -107,7 +116,7 @@ public class HireService : IHireService
         decimal? countOfFine = _hire.Sum(hire => hire.FineCharges);
         Console.WriteLine($"Count of hire: {count}" +
                           $"\nCount of users: {countOfUser}" +
-                          $"\nTotal fines: {countOfFine}" +
+                          $"\nTotal sum fines: {countOfFine}" +
                           $"\nCount of equipments: {countOfEquipment}" +
                           $"\nCount of returned hires on time: {countOfReturnedHireOnTime}" +
                           $"\nCount of returned hires later: {countOfReturnedHireLater}");
