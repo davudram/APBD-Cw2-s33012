@@ -1,6 +1,6 @@
 ﻿namespace EquipmentHire.Model;
 
-public class Hire(User hUser, Equipment hEquipment, DateTime hHireStart, DateTime hHireExcepted, bool hIsReturnOnTime)
+public class Hire(User hUser, Equipment hEquipment, DateTime hHireStart, DateTime hHireExcepted)
 {
     private static int _hireId = 1;
     
@@ -11,5 +11,5 @@ public class Hire(User hUser, Equipment hEquipment, DateTime hHireStart, DateTim
     public DateTime ExceptedOfHire { get; set; } = hHireExcepted;
     public DateTime? ActualReturnDate { get; set; }
     public decimal? FineCharges { get; set; }
-    public bool IsReturnedOnTime { get; set; } = hIsReturnOnTime;
+    public bool IsReturnedOnTime { get; set; }
 }
